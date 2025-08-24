@@ -3,25 +3,44 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
+import { useEffect } from "react";
+import { useGameStore } from "@/hooks/useGameStore";
+import MainMenu from "./pages/MainMenu";
+import GameScreen from "./pages/GameScreen";
+import ResultScreen from "./pages/ResultScreen";
+import SettingsScreen from "./pages/SettingsScreen";
+import BossFightScreen from "./pages/BossFightScreen";
+import LevelUpScreen from "./pages/LevelUpScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+const App = () => {
+  const { theme } = useGameStore();
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', theme === 'dark');
+  }, [theme]);
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<MainMenu />} />
+            <Route path="/game/:difficulty" element={<GameScreen />} />
+            <Route path="/result" element={<ResultScreen />} />
+            <Route path="/settings" element={<SettingsScreen />} />
+            <Route path="/boss-fight" element={<BossFightScreen />} />
+            <Route path="/level-up" element={<LevelUpScreen />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
