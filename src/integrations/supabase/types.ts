@@ -65,6 +65,42 @@ export type Database = {
           },
         ]
       }
+      game_sessions: {
+        Row: {
+          coins_earned: number
+          completion_time: number | null
+          created_at: string
+          difficulty: string
+          hints_used: number
+          id: string
+          is_completed: boolean
+          lives_lost: number
+          user_id: string
+        }
+        Insert: {
+          coins_earned?: number
+          completion_time?: number | null
+          created_at?: string
+          difficulty: string
+          hints_used?: number
+          id?: string
+          is_completed?: boolean
+          lives_lost?: number
+          user_id: string
+        }
+        Update: {
+          coins_earned?: number
+          completion_time?: number | null
+          created_at?: string
+          difficulty?: string
+          hints_used?: number
+          id?: string
+          is_completed?: boolean
+          lives_lost?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       matches: {
         Row: {
           away_odds: number | null
@@ -149,6 +185,48 @@ export type Database = {
           total_bets?: number
           total_wins?: number
           updated_at?: string
+        }
+        Relationships: []
+      }
+      user_stats: {
+        Row: {
+          best_times: Json
+          coin_balance: number
+          created_at: string
+          current_level: number
+          games_until_boss: number
+          id: string
+          total_experience: number
+          total_games_played: number
+          total_games_won: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          best_times?: Json
+          coin_balance?: number
+          created_at?: string
+          current_level?: number
+          games_until_boss?: number
+          id?: string
+          total_experience?: number
+          total_games_played?: number
+          total_games_won?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          best_times?: Json
+          coin_balance?: number
+          created_at?: string
+          current_level?: number
+          games_until_boss?: number
+          id?: string
+          total_experience?: number
+          total_games_played?: number
+          total_games_won?: number
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }
