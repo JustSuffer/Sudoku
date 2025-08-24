@@ -1,16 +1,24 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { GameStats, Theme, Difficulty } from '@/types/game';
+import { GameStats, Theme, Difficulty, UserStats } from '@/types/game';
+import { User, Session } from '@supabase/supabase-js';
 
 interface GameStore {
   theme: Theme;
   stats: GameStats;
+  user: User | null;
+  session: Session | null;
+  userStats: UserStats | null;
   setTheme: (theme: Theme) => void;
   updateStats: (updates: Partial<GameStats>) => void;
   addExperience: (points: number) => void;
   levelUp: () => void;
   decrementBossCounter: () => void;
   resetBossCounter: () => void;
+  setUser: (user: User | null) => void;
+  setSession: (session: Session | null) => void;
+  setUserStats: (userStats: UserStats | null) => void;
+  updateCoins: (amount: number) => void;
 }
 
 const initialStats: GameStats = {
@@ -26,6 +34,7 @@ const initialStats: GameStats = {
   currentLevel: 1,
   experience: 0,
   gamesUntilBoss: 5,
+  coinBalance: 50,
 };
 
 export const useGameStore = create<GameStore>()(
@@ -33,6 +42,9 @@ export const useGameStore = create<GameStore>()(
     (set, get) => ({
       theme: 'light',
       stats: initialStats,
+      user: null,
+      session: null,
+      userStats: null,
       setTheme: (theme) => {
         set({ theme });
         document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -78,6 +90,20 @@ export const useGameStore = create<GameStore>()(
       resetBossCounter: () =>
         set((state) => ({
           stats: { ...state.stats, gamesUntilBoss: 5 },
+        })),
+      setUser: (user) => set({ user }),
+      setSession: (session) => set({ session }),
+      setUserStats: (userStats) => set({ userStats }),
+      updateCoins: (amount) =>
+        set((state) => ({
+          stats: {
+            ...state.stats,
+            coinBalance: Math.max(0, state.stats.coinBalance + amount),
+          },
+          userStats: state.userStats ? {
+            ...state.userStats,
+            coin_balance: Math.max(0, state.userStats.coin_balance + amount),
+          } : null,
         })),
     }),
     {

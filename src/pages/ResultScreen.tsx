@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Trophy, Clock, Star, Home, RotateCcw } from 'lucide-react';
 import { Difficulty } from '@/types/game';
+import CoinIcon from '@/components/CoinIcon';
 
 interface ResultState {
   time: number;
   difficulty: Difficulty;
   isNewRecord: boolean;
   experience: number;
+  coinsEarned?: number;
 }
 
 const ResultScreen = () => {
@@ -23,7 +25,7 @@ const ResultScreen = () => {
     return null;
   }
 
-  const { time, difficulty, isNewRecord, experience } = state;
+  const { time, difficulty, isNewRecord, experience, coinsEarned } = state;
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -133,16 +135,30 @@ const ResultScreen = () => {
             </div>
           </div>
 
-          {/* Experience Gained */}
-          <div className="mt-8 p-6 bg-gradient-primary rounded-lg text-center">
-            <div className="flex items-center justify-center gap-2 mb-2">
-              <div className="text-2xl">⚡</div>
-              <span className="text-xl font-bold text-primary-foreground">
-                +{experience} Deneyim Kazandın!
-              </span>
+          {/* Experience and Coins Gained */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="p-6 bg-gradient-primary rounded-lg text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <div className="text-2xl">⚡</div>
+                <span className="text-xl font-bold text-primary-foreground">
+                  +{experience} Deneyim
+                </span>
+              </div>
+              <div className="text-sm text-primary-foreground/80">
+                Seviye {stats.currentLevel} • {stats.experience}/{stats.currentLevel * 100} Deneyim
+              </div>
             </div>
-            <div className="text-sm text-primary-foreground/80">
-              Seviye {stats.currentLevel} • {stats.experience}/{stats.currentLevel * 100} Deneyim
+            
+            <div className="p-6 bg-gradient-secondary rounded-lg text-center">
+              <div className="flex items-center justify-center gap-2 mb-2">
+                <CoinIcon className="w-6 h-6" />
+                <span className="text-xl font-bold text-secondary-foreground">
+                  +{coinsEarned || 0} Coin
+                </span>
+              </div>
+              <div className="text-sm text-secondary-foreground/80">
+                Zorluk bonusu dahil
+              </div>
             </div>
           </div>
         </Card>

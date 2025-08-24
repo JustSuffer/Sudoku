@@ -5,18 +5,23 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useEffect } from "react";
 import { useGameStore } from "@/hooks/useGameStore";
+import { useAuth } from "@/hooks/useAuth";
 import MainMenu from "./pages/MainMenu";
 import GameScreen from "./pages/GameScreen";
 import ResultScreen from "./pages/ResultScreen";
 import SettingsScreen from "./pages/SettingsScreen";
 import BossFightScreen from "./pages/BossFightScreen";
 import LevelUpScreen from "./pages/LevelUpScreen";
+import AuthScreen from "./pages/AuthScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const { theme } = useGameStore();
+  
+  // Initialize auth
+  useAuth();
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -31,11 +36,12 @@ const App = () => {
           <Routes>
             <Route path="/" element={<MainMenu />} />
             <Route path="/game/:difficulty" element={<GameScreen />} />
-            <Route path="/result" element={<ResultScreen />} />
-            <Route path="/settings" element={<SettingsScreen />} />
-            <Route path="/boss-fight" element={<BossFightScreen />} />
-            <Route path="/level-up" element={<LevelUpScreen />} />
-            <Route path="*" element={<NotFound />} />
+          <Route path="/result" element={<ResultScreen />} />
+          <Route path="/settings" element={<SettingsScreen />} />
+          <Route path="/boss-fight" element={<BossFightScreen />} />
+          <Route path="/level-up" element={<LevelUpScreen />} />
+          <Route path="/auth" element={<AuthScreen />} />
+          <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>

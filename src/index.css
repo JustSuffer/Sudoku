@@ -189,6 +189,21 @@
     background: hsl(var(--destructive) / 0.2);
     color: hsl(var(--destructive));
   }
+
+  .sudoku-cell.highlighted {
+    background: hsl(var(--primary) / 0.3);
+    font-weight: bold;
+  }
+
+  .sudoku-cell.warning-mode {
+    background: hsl(var(--yellow-500) / 0.1);
+    border-color: hsl(var(--yellow-500) / 0.2);
+  }
+
+  .sudoku-cell.danger-mode {
+    background: hsl(var(--red-500) / 0.2);
+    border-color: hsl(var(--red-500) / 0.3);
+  }
   
   /* Gaming Animations */
   .float-animation {

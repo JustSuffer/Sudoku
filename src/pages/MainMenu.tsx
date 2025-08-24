@@ -2,13 +2,16 @@ import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/hooks/useGameStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Crown, User, Settings, Trophy, Zap } from 'lucide-react';
+import { Crown, User, Settings, Trophy, Zap, LogIn, LogOut } from 'lucide-react';
 import { Difficulty } from '@/types/game';
+import { useAuth } from '@/hooks/useAuth';
 import sudokuLogo from '@/assets/sudoku-logo.png';
+import CoinIcon from '@/components/CoinIcon';
 
 const MainMenu = () => {
   const navigate = useNavigate();
-  const { stats } = useGameStore();
+  const { stats, userStats } = useGameStore();
+  const { isAuthenticated, user, signOut } = useAuth();
 
   const difficulties: { key: Difficulty; label: string; description: string; icon: string }[] = [
     { key: 'easy', label: 'Kolay', description: '35 boş hücre', icon: '🟢' },
@@ -35,19 +38,66 @@ const MainMenu = () => {
       </div>
 
       <div className="w-full max-w-4xl z-10">
-        {/* Logo and Title */}
-        <div className="text-center mb-12">
-          <img 
-            src={sudokuLogo} 
-            alt="Sudoku Logo" 
-            className="w-64 h-36 mx-auto mb-6 float-animation object-cover rounded-2xl shadow-glow"
-          />
-          <h1 className="text-6xl font-black mb-4 text-foreground glow-animation">
+        {/* Header with Logo and Auth */}
+        <div className="text-center mb-8">
+          <div className="flex justify-center items-center gap-4 mb-6">
+            <img 
+              src={sudokuLogo} 
+              alt="Sudoku Logo" 
+              className="w-24 h-24 hover-scale animate-fade-in"
+            />
+            
+            {/* Auth Section */}
+            <div className="flex flex-col items-center gap-2">
+              {isAuthenticated ? (
+                <>
+                  <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <CoinIcon className="w-5 h-5" />
+                    <span className="font-bold text-foreground">
+                      {userStats?.coin_balance || 0}
+                    </span>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={signOut}
+                    className="btn-secondary-gaming"
+                  >
+                    <LogOut className="w-4 h-4 mr-1" />
+                    Çıkış
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
+                    <CoinIcon className="w-5 h-5" />
+                    <span className="font-bold text-foreground">
+                      {stats.coinBalance}
+                    </span>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => navigate('/auth')}
+                    className="btn-secondary-gaming"
+                  >
+                    <LogIn className="w-4 h-4 mr-1" />
+                    Giriş
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 animate-fade-in">
             SUDOKU MASTER
           </h1>
-          <p className="text-xl text-muted-foreground">
-            Ultimate puzzle challenge awaits
-          </p>
+          
+          <div className="flex justify-center gap-8 text-sm text-muted-foreground">
+            <div>Seviye: {stats.currentLevel}</div>
+            <div>Oyun: {stats.gamesWon}/{stats.gamesPlayed}</div>
+            <div>Boss: {stats.gamesUntilBoss} kaldı</div>
+          </div>
         </div>
 
         {/* Player Stats */}

@@ -4,11 +4,12 @@ import { SudokuBoard, SudokuCell, Difficulty } from '@/types/game';
 export const createEmptyBoard = (): SudokuBoard => {
   return Array(9).fill(null).map(() =>
     Array(9).fill(null).map(() => ({
-      value: 0,
-      isFixed: false,
-      isSelected: false,
-      isError: false,
-      hints: [],
+        value: 0,
+        isFixed: false,
+        isSelected: false,
+        isError: false,
+        hints: [],
+        isHighlighted: false,
     }))
   );
 };

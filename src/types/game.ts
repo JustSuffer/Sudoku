@@ -10,6 +10,7 @@ export interface GameStats {
   currentLevel: number;
   experience: number;
   gamesUntilBoss: number;
+  coinBalance: number;
 }
 
 export interface SudokuCell {
@@ -18,6 +19,7 @@ export interface SudokuCell {
   isSelected: boolean;
   isError: boolean;
   hints: number[];
+  isHighlighted: boolean;
 }
 
 export type SudokuBoard = SudokuCell[][];
@@ -30,6 +32,24 @@ export interface GameState {
   isComplete: boolean;
   isPaused: boolean;
   selectedCell: { row: number; col: number } | null;
+  livesRemaining: number;
+  hintsUsed: number;
+  selectedNumber: number | null;
+  sessionId: string | null;
+}
+
+export interface UserStats {
+  id: string;
+  user_id: string;
+  coin_balance: number;
+  total_games_played: number;
+  total_games_won: number;
+  total_experience: number;
+  current_level: number;
+  games_until_boss: number;
+  best_times: Record<Difficulty, number>;
+  created_at: string;
+  updated_at: string;
 }
 
 export interface BossFight {
