@@ -22,11 +22,11 @@ const AdModal = ({ isOpen, onClose }: AdModalProps) => {
     
     // Simulate ad watching
     setTimeout(() => {
-      updateCoins(50);
+      updateCoins(20);
       setIsWatchingAd(false);
       toast({
-        title: "Tebrikler!",
-        description: "50 coin kazandınız!",
+        title: "Coin Kazandınız!",
+        description: "Reklam izlediğiniz için 20 coin kazandınız.",
         variant: "default",
       });
       onClose();
@@ -50,11 +50,11 @@ const AdModal = ({ isOpen, onClose }: AdModalProps) => {
               Reklam İzleyerek Coin Kazan!
             </h3>
             <p className="text-muted-foreground">
-              Kısa bir reklam izleyerek 50 coin kazanabilirsiniz
+              Reklam izleyerek 20 coin kazanabilirsiniz!
             </p>
             
             <div className="flex items-center justify-center gap-2 bg-primary/10 rounded-lg p-3">
-              <span className="text-lg font-bold">+50</span>
+              <span className="text-lg font-bold">+20</span>
               <CoinIcon className="w-6 h-6" />
             </div>
             

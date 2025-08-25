@@ -11,19 +11,21 @@ import CoinIcon from '@/components/CoinIcon';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import AdModal from '@/components/AdModal';
 import { useToast } from '@/hooks/use-toast';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const MainMenu = () => {
   const navigate = useNavigate();
   const { stats, userStats } = useGameStore();
   const { isAuthenticated, user, signOut } = useAuth();
   const { toast } = useToast();
+  const { t, currentLanguage } = useLanguage();
   const [isAdModalOpen, setIsAdModalOpen] = useState(false);
 
-  const difficulties: { key: Difficulty; label: string; description: string; icon: string }[] = [
-    { key: 'easy', label: 'Kolay', description: '35 boş hücre', icon: '🟢' },
-    { key: 'medium', label: 'Orta', description: '45 boş hücre', icon: '🟡' },
-    { key: 'hard', label: 'Zor', description: '55 boş hücre', icon: '🟠' },
-    { key: 'expert', label: 'Uzman', description: '65 boş hücre', icon: '🔴' },
+  const difficulties: { key: Difficulty; label: string; labelEn: string; description: string; descriptionEn: string; icon: string }[] = [
+    { key: 'easy', label: 'Kolay', labelEn: 'Easy', description: '35 boş hücre', descriptionEn: '35 empty cells', icon: '🟢' },
+    { key: 'medium', label: 'Orta', labelEn: 'Medium', description: '45 boş hücre', descriptionEn: '45 empty cells', icon: '🟡' },
+    { key: 'hard', label: 'Zor', labelEn: 'Hard', description: '55 boş hücre', descriptionEn: '55 empty cells', icon: '🟠' },
+    { key: 'expert', label: 'Uzman', labelEn: 'Expert', description: '65 boş hücre', descriptionEn: '65 empty cells', icon: '🔴' },
   ];
 
   const handleDifficultySelect = (difficulty: Difficulty) => {
@@ -37,8 +39,8 @@ const MainMenu = () => {
   const handleProfileClick = () => {
     if (!isAuthenticated) {
       toast({
-        title: "Giriş Gerekli",
-        description: "Lütfen bu sekmeyi görmek için giriş yapınız",
+        title: currentLanguage === 'tr' ? "Giriş Gerekli" : "Login Required",
+        description: t('profile.loginRequired'),
         variant: "destructive",
       });
       return;
@@ -139,7 +141,7 @@ const MainMenu = () => {
             <div className="flex flex-col items-center">
               <Crown className="w-8 h-8 text-primary mb-2" />
               <span className="text-2xl font-bold text-foreground">{stats.currentLevel}</span>
-              <span className="text-sm text-muted-foreground">Seviye</span>
+              <span className="text-sm text-muted-foreground">{t('main.level')}</span>
             </div>
             <div className="flex flex-col items-center">
               <Trophy className="w-8 h-8 text-secondary mb-2" />
@@ -149,7 +151,7 @@ const MainMenu = () => {
             <div className="flex flex-col items-center">
               <Zap className="w-8 h-8 text-warning mb-2" />
               <span className="text-2xl font-bold text-foreground">{stats.experience}</span>
-              <span className="text-sm text-muted-foreground">Deneyim</span>
+              <span className="text-sm text-muted-foreground">{t('main.experience')}</span>
             </div>
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 text-2xl mb-2">🔥</div>
@@ -170,10 +172,14 @@ const MainMenu = () => {
             >
               <div className="text-center">
                 <div className="text-4xl mb-3">{difficulty.icon}</div>
-                <h3 className="text-2xl font-bold mb-2 text-foreground">{difficulty.label}</h3>
-                <p className="text-muted-foreground mb-4">{difficulty.description}</p>
+                <h3 className="text-2xl font-bold mb-2 text-foreground">
+                  {currentLanguage === 'tr' ? difficulty.label : difficulty.labelEn}
+                </h3>
+                <p className="text-muted-foreground mb-4">
+                  {currentLanguage === 'tr' ? difficulty.description : difficulty.descriptionEn}
+                </p>
                 <Button className="btn-gaming w-full">
-                  Başla
+                  {currentLanguage === 'tr' ? 'Başla' : 'Start'}
                 </Button>
               </div>
             </Card>
@@ -197,7 +203,7 @@ const MainMenu = () => {
         <Card className="mb-8 p-4 bg-card/80 backdrop-blur-sm text-center hover:scale-105 transition-all duration-300 cursor-pointer" onClick={() => navigate('/shop')}>
           <Button className="btn-gaming w-full text-xl py-4 flex items-center justify-center gap-3">
             <ShoppingBag className="w-6 h-6" />
-            MAĞAZA
+            {t('main.shop')}
             <div className="text-sm bg-warning text-warning-foreground px-2 py-1 rounded-full">
               Yeni!
             </div>
@@ -220,7 +226,7 @@ const MainMenu = () => {
             onClick={handleProfileClick}
           >
             <User className="w-5 h-5" />
-            Profil
+            {t('main.profile')}
           </Button>
         </div>
       </div>

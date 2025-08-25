@@ -1,13 +1,11 @@
-import { useState } from 'react';
 import { Button } from '@/components/ui/button';
-
-type Language = 'tr' | 'en';
+import { useLanguage } from '@/hooks/useLanguage';
 
 const LanguageSwitcher = ({ className = "" }: { className?: string }) => {
-  const [currentLanguage, setCurrentLanguage] = useState<Language>('tr');
+  const { currentLanguage, setLanguage } = useLanguage();
 
   const toggleLanguage = () => {
-    setCurrentLanguage(prev => prev === 'tr' ? 'en' : 'tr');
+    setLanguage(currentLanguage === 'tr' ? 'en' : 'tr');
   };
 
   return (

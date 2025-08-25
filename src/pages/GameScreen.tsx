@@ -54,19 +54,26 @@ const GameScreen = () => {
   };
 
   const handleCellClick = useCallback((row: number, col: number) => {
-    if (gameState.board[row][col].isFixed || gameState.isPaused) return;
+    if (gameState.isPaused) return;
 
-    setGameState(prev => ({
-      ...prev,
-      selectedCell: { row, col },
-      board: prev.board.map((boardRow, r) =>
-        boardRow.map((cell, c) => ({
-          ...cell,
-          isSelected: r === row && c === col,
-        }))
-      ),
-    }));
-  }, [gameState.board, gameState.isPaused]);
+    setGameState(prev => {
+      const clickedCell = prev.board[row][col];
+      const clickedValue = clickedCell.value;
+
+      return {
+        ...prev,
+        selectedCell: { row, col },
+        selectedNumber: clickedValue !== 0 ? clickedValue : null,
+        board: prev.board.map((boardRow, r) =>
+          boardRow.map((cell, c) => ({
+            ...cell,
+            isSelected: r === row && c === col,
+            isHighlighted: clickedValue !== 0 && cell.value === clickedValue,
+          }))
+        ),
+      };
+    });
+  }, [gameState.isPaused]);
 
   const handleNumberInput = useCallback((number: number) => {
     if (!gameState.selectedCell || gameState.isPaused || gameState.livesRemaining <= 0) return;
@@ -200,10 +207,10 @@ const GameScreen = () => {
 
   const calculateCoinsEarned = (difficulty: Difficulty) => {
     const coinRewards = {
-      easy: 3,
-      medium: 5,
-      hard: 7,
-      expert: 10,
+      easy: 10,
+      medium: 20,
+      hard: 35,
+      expert: 50,
     };
     return coinRewards[difficulty];
   };
@@ -211,13 +218,13 @@ const GameScreen = () => {
   const useHint = useCallback(async () => {
     if (gameState.isPaused || gameState.livesRemaining <= 0) return;
     
-    const coinCost = 50;
+    const coinCost = 80;
     const currentCoins = isAuthenticated ? userStats?.coin_balance || 0 : stats.coinBalance;
     
     if (currentCoins < coinCost) {
       toast({
         title: "Yetersiz Coin",
-        description: "İpucu için 50 coin gerekli.",
+        description: "İpucu için 80 coin gerekli.",
         variant: "destructive",
       });
       return;
@@ -285,7 +292,7 @@ const GameScreen = () => {
 
     toast({
       title: "İpucu Kullanıldı",
-      description: "50 coin karşılığında bir hücre dolduruldu.",
+      description: "80 coin karşılığında bir hücre dolduruldu.",
     });
   }, [gameState, stats.coinBalance, userStats?.coin_balance, isAuthenticated, user, updateCoins, toast]);
 
@@ -355,7 +362,7 @@ const GameScreen = () => {
   return (
     <div className={`min-h-screen p-4 transition-all duration-500 ${
       gameState.livesRemaining <= 1 ? 'lives-danger' : 
-      gameState.livesRemaining <= 2 ? 'lives-warning' : 
+      gameState.livesRemaining <= 2 ? `lives-warning ${useGameStore.getState().theme === 'light' ? 'theme-light' : 'theme-dark'}` : 
       'bg-gradient-hero'
     }`}>
       {/* Floating skulls for danger mode */}
@@ -474,9 +481,9 @@ const GameScreen = () => {
                    } ${
                      cell.isError ? 'error' : ''
                     } ${
-                      cell.isHighlighted ? 'highlighted animate-pulse' : ''
+                      cell.isHighlighted ? 'highlighted' : ''
                     } ${
-                      cell.isFixed ? 'font-black' : 'font-normal'
+                      cell.isFixed ? 'font-black fixed-number' : 'font-normal user-number'
                     }`}
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
@@ -500,12 +507,12 @@ const GameScreen = () => {
                 onClick={useHint}
                 className="btn-secondary-gaming rounded-full px-8 py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300"
                 style={{ animation: 'pulseGlow 2s infinite' }}
-                disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 50 : stats.coinBalance < 50)}
+                disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 80 : stats.coinBalance < 80)}
               >
                 ✨ İpucu
               </Button>
               <div className="flex items-center gap-1 text-sm font-bold text-muted-foreground">
-                50 <CoinIcon className="w-4 h-4" />
+                80 <CoinIcon className="w-4 h-4" />
               </div>
             </div>
           </Card>
