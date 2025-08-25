@@ -353,7 +353,21 @@ const GameScreen = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero p-4">
+    <div className={`min-h-screen p-4 transition-all duration-500 ${
+      gameState.livesRemaining <= 1 ? 'lives-danger' : 
+      gameState.livesRemaining <= 2 ? 'lives-warning' : 
+      'bg-gradient-hero'
+    }`}>
+      {/* Floating skulls for danger mode */}
+      {gameState.livesRemaining <= 1 && (
+        <div className="danger-skulls">
+          <div className="floating-skull">💀</div>
+          <div className="floating-skull">💀</div>
+          <div className="floating-skull">💀</div>
+          <div className="floating-skull">💀</div>
+          <div className="floating-skull">💀</div>
+        </div>
+      )}
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
@@ -459,13 +473,11 @@ const GameScreen = () => {
                      cell.isSelected ? 'selected' : ''
                    } ${
                      cell.isError ? 'error' : ''
-                   } ${
-                     cell.isHighlighted ? 'highlighted' : ''
-                   } ${
-                     cell.isFixed ? 'font-black' : 'font-normal'
-                   } ${
-                     gameState.livesRemaining <= 1 ? 'danger-mode' : gameState.livesRemaining <= 2 ? 'warning-mode' : ''
-                   }`}
+                    } ${
+                      cell.isHighlighted ? 'highlighted animate-pulse' : ''
+                    } ${
+                      cell.isFixed ? 'font-black' : 'font-normal'
+                    }`}
                   onClick={() => handleCellClick(rowIndex, colIndex)}
                   style={{
                     borderRight: colIndex % 3 === 2 && colIndex !== 8 ? '3px solid hsl(var(--sudoku-border))' : undefined,
@@ -483,15 +495,18 @@ const GameScreen = () => {
         <div className="flex flex-col gap-4">
           {/* Hint Button */}
           <Card className="p-4 bg-card/80 backdrop-blur-sm">
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-2">
               <Button
                 onClick={useHint}
-                className="btn-secondary-gaming flex items-center gap-2"
+                className="btn-secondary-gaming rounded-full px-8 py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300"
+                style={{ animation: 'pulseGlow 2s infinite' }}
                 disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 50 : stats.coinBalance < 50)}
               >
-                <HelpCircle className="w-4 h-4" />
-                İpucu (50 <CoinIcon className="w-4 h-4" />)
+                ✨ İpucu
               </Button>
+              <div className="flex items-center gap-1 text-sm font-bold text-muted-foreground">
+                50 <CoinIcon className="w-4 h-4" />
+              </div>
             </div>
           </Card>
 

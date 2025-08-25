@@ -1,17 +1,23 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useGameStore } from '@/hooks/useGameStore';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-import { Crown, User, Settings, Trophy, Zap, LogIn, LogOut } from 'lucide-react';
+import { Crown, User, Settings, Trophy, Zap, LogIn, LogOut, ShoppingBag } from 'lucide-react';
 import { Difficulty } from '@/types/game';
 import { useAuth } from '@/hooks/useAuth';
 import sudokuLogo from '@/assets/sudoku-logo.png';
 import CoinIcon from '@/components/CoinIcon';
+import LanguageSwitcher from '@/components/LanguageSwitcher';
+import AdModal from '@/components/AdModal';
+import { useToast } from '@/hooks/use-toast';
 
 const MainMenu = () => {
   const navigate = useNavigate();
   const { stats, userStats } = useGameStore();
   const { isAuthenticated, user, signOut } = useAuth();
+  const { toast } = useToast();
+  const [isAdModalOpen, setIsAdModalOpen] = useState(false);
 
   const difficulties: { key: Difficulty; label: string; description: string; icon: string }[] = [
     { key: 'easy', label: 'Kolay', description: '35 boş hücre', icon: '🟢' },
@@ -28,8 +34,29 @@ const MainMenu = () => {
     }
   };
 
+  const handleProfileClick = () => {
+    if (!isAuthenticated) {
+      toast({
+        title: "Giriş Gerekli",
+        description: "Lütfen bu sekmeyi görmek için giriş yapınız",
+        variant: "destructive",
+      });
+      return;
+    }
+    navigate('/profile');
+  };
+
+  const handleCoinClick = () => {
+    setIsAdModalOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center p-4">
+      {/* Language Switcher - Top Right */}
+      <div className="fixed top-4 right-4 z-20">
+        <LanguageSwitcher />
+      </div>
+
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-20 h-20 bg-primary/20 rounded-full float-animation"></div>
@@ -51,7 +78,10 @@ const MainMenu = () => {
             <div className="flex flex-col items-center gap-2">
               {isAuthenticated ? (
                 <>
-                  <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
+                  <div 
+                    className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2 cursor-pointer hover:scale-105 transition-all"
+                    onClick={handleCoinClick}
+                  >
                     <CoinIcon className="w-5 h-5" />
                     <span className="font-bold text-foreground">
                       {userStats?.coin_balance || 0}
@@ -69,7 +99,10 @@ const MainMenu = () => {
                 </>
               ) : (
                 <>
-                  <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
+                  <div 
+                    className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2 cursor-pointer hover:scale-105 transition-all"
+                    onClick={handleCoinClick}
+                  >
                     <CoinIcon className="w-5 h-5" />
                     <span className="font-bold text-foreground">
                       {stats.coinBalance}
@@ -160,6 +193,17 @@ const MainMenu = () => {
           </Card>
         )}
 
+        {/* Shop Button */}
+        <Card className="mb-8 p-4 bg-card/80 backdrop-blur-sm text-center hover:scale-105 transition-all duration-300 cursor-pointer" onClick={() => navigate('/shop')}>
+          <Button className="btn-gaming w-full text-xl py-4 flex items-center justify-center gap-3">
+            <ShoppingBag className="w-6 h-6" />
+            MAĞAZA
+            <div className="text-sm bg-warning text-warning-foreground px-2 py-1 rounded-full">
+              Yeni!
+            </div>
+          </Button>
+        </Card>
+
         {/* Menu Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Button 
@@ -173,12 +217,16 @@ const MainMenu = () => {
           <Button 
             variant="outline"
             className="btn-secondary-gaming flex items-center gap-2"
+            onClick={handleProfileClick}
           >
             <User className="w-5 h-5" />
             Profil
           </Button>
         </div>
       </div>
+
+      {/* Ad Modal */}
+      <AdModal isOpen={isAdModalOpen} onClose={() => setIsAdModalOpen(false)} />
     </div>
   );
 };

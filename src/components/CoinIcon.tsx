@@ -11,9 +11,9 @@ const CoinIcon = ({ className = "w-6 h-6" }: { className?: string }) => {
           ? 'bg-gradient-to-br from-yellow-400 to-yellow-600 border-yellow-500 text-black shadow-gaming' 
           : 'bg-gradient-to-br from-green-200 to-purple-200 border-green-400 text-foreground shadow-lg'
         }
-        transition-all duration-300
+        transition-all duration-300 hover:scale-110 cursor-pointer
       `}>
-        CM
+        <span className="tracking-wider font-black">CM</span>
       </div>
     </div>
   );

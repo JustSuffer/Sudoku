@@ -13,6 +13,8 @@ import SettingsScreen from "./pages/SettingsScreen";
 import BossFightScreen from "./pages/BossFightScreen";
 import LevelUpScreen from "./pages/LevelUpScreen";
 import AuthScreen from "./pages/AuthScreen";
+import ShopScreen from "./pages/ShopScreen";
+import ProfileScreen from "./pages/ProfileScreen";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,12 +38,14 @@ const App = () => {
           <Routes>
             <Route path="/" element={<MainMenu />} />
             <Route path="/game/:difficulty" element={<GameScreen />} />
-          <Route path="/result" element={<ResultScreen />} />
-          <Route path="/settings" element={<SettingsScreen />} />
-          <Route path="/boss-fight" element={<BossFightScreen />} />
-          <Route path="/level-up" element={<LevelUpScreen />} />
-          <Route path="/auth" element={<AuthScreen />} />
-          <Route path="*" element={<NotFound />} />
+            <Route path="/result" element={<ResultScreen />} />
+            <Route path="/settings" element={<SettingsScreen />} />
+            <Route path="/boss-fight" element={<BossFightScreen />} />
+            <Route path="/level-up" element={<LevelUpScreen />} />
+            <Route path="/auth" element={<AuthScreen />} />
+            <Route path="/shop" element={<ShopScreen />} />
+            <Route path="/profile" element={<ProfileScreen />} />
+            <Route path="*" element={<NotFound />} />
           </Routes>
         </BrowserRouter>
       </TooltipProvider>
