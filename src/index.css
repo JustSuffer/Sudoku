@@ -234,7 +234,6 @@
   
   .lives-warning.theme-dark {
     background: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(0, 0%, 95%)); /* White background for dark theme */
-  }
     border-color: hsl(var(--lives-warning-bg));
   }
   
