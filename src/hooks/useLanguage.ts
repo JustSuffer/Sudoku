@@ -58,6 +58,8 @@ const translations = {
     'shop.categories.neon': 'Neon Temalar',
     'shop.categories.anime': 'Anime Temalar',
     'shop.categories.teams': 'Takım Temaları',
+    'shop.lootBox': 'MasterLoot BOX',
+    'shop.inventory': 'Envanter',
     'shop.categories.countries': 'Ülke Temaları',
     
     // Profile
@@ -139,6 +141,8 @@ const translations = {
     'shop.categories.anime': 'Anime Themes',
     'shop.categories.teams': 'Team Themes',
     'shop.categories.countries': 'Country Themes',
+    'shop.lootBox': 'MasterLoot BOX',
+    'shop.inventory': 'Inventory',
     
     // Profile
     'profile.title': 'Profile',

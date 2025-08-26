@@ -282,6 +282,7 @@
     
     .note-number {
       font-size: 0.5rem;
+      color: hsl(var(--muted-foreground));
     }
   }
   

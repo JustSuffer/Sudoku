@@ -6,8 +6,9 @@ import { useLanguage } from '@/hooks/useLanguage';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Coins } from 'lucide-react';
+import { ArrowLeft, Coins, Sparkles } from 'lucide-react';
 import CoinIcon from '@/components/CoinIcon';
+import LootBox from '@/components/LootBox';
 import { useToast } from '@/hooks/use-toast';
 
 interface ThemeItem {
@@ -31,6 +32,7 @@ const ShopScreen = () => {
   const { t, currentLanguage } = useLanguage();
   const { toast } = useToast();
   const [purchasedItems, setPurchasedItems] = useState<string[]>([]);
+  const [inventory, setInventory] = useState<string[]>([]);
 
   const themes: ThemeItem[] = [
     // Basic themes (250 coins)
@@ -201,6 +203,58 @@ const ShopScreen = () => {
             <span className="text-sm">{currentLanguage === 'tr' ? 'reklam başına' : 'per ad'}</span>
           </div>
         </Card>
+
+        {/* MasterLoot BOX Section */}
+        <Card className="p-6 mb-8 bg-card/80 backdrop-blur-sm">
+          <h2 className="text-2xl font-bold mb-6 text-center text-foreground flex items-center justify-center gap-2">
+            <Sparkles className="w-6 h-6 text-yellow-400" />
+            {t('shop.lootBox')}
+            <Sparkles className="w-6 h-6 text-yellow-400" />
+          </h2>
+          
+          <div className="max-w-md mx-auto">
+            <LootBox onThemeReceived={(theme) => {
+              setInventory(prev => [...prev, theme]);
+              toast({
+                title: "Tema Envanterinize Eklendi!",
+                description: `${theme} artık kullanılabilir.`,
+              });
+            }} />
+          </div>
+        </Card>
+
+        {/* Inventory Section */}
+        {inventory.length > 0 && (
+          <Card className="p-6 mb-8 bg-card/80 backdrop-blur-sm">
+            <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
+              {t('shop.inventory')}
+            </h2>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {inventory.map((theme, index) => (
+                <Card key={index} className="p-4 text-center hover:scale-105 transition-all duration-300">
+                  <div className="text-2xl mb-2">🎨</div>
+                  <div className="text-sm font-semibold text-foreground">
+                    {theme}
+                  </div>
+                  <Button 
+                    size="sm" 
+                    className="mt-2 btn-gaming"
+                    onClick={() => {
+                      // Apply theme functionality would go here
+                      toast({
+                        title: "Tema Uygulandı!",
+                        description: `${theme} aktif edildi.`,
+                      });
+                    }}
+                  >
+                    Uygula
+                  </Button>
+                </Card>
+              ))}
+            </div>
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -17,21 +17,32 @@ const BossFightScreen = () => {
   const [countdown, setCountdown] = useState(3);
   const [showCountdown, setShowCountdown] = useState(true);
 
+  // Boss fight time limits based on difficulty
+  const getTimeLimit = (diff: Difficulty) => {
+    switch (diff) {
+      case 'easy': return 210; // 3:30
+      case 'medium': return 480; // 8:00
+      case 'hard': return 900; // 15:00
+      case 'expert': return 1200; // 20:00
+      default: return 300;
+    }
+  };
+
   // Boss fight data
   const bossFights: BossFight[] = [
     {
       id: 'shadow-master',
       title: 'Gölge Efendisi',
       description: 'Karanlık güçlerle dolu bu challenge\'da her hata seni geri götürür!',
-      timeLimit: 300, // 5 minutes
+      timeLimit: getTimeLimit(difficulty),
       difficulty: difficulty,
-      specialRules: ['Her hata 10 saniye ceza', 'Sadece 3 hata hakkın var', 'Ipucu yok!']
+      specialRules: ['Her hata 10 saniye ceza', 'Sadece 3 hata hakkın var', 'İpucu yok!']
     },
     {
       id: 'time-wraith',
       title: 'Zaman Hayaleti', 
       description: 'Zamanla yarış! Süre azaldıkça puzzle daha da zorlaşır.',
-      timeLimit: 240, // 4 minutes
+      timeLimit: getTimeLimit(difficulty),
       difficulty: difficulty,
       specialRules: ['Süre azaldıkça hızlan', 'Son 60 saniyede ekstra zorluk', 'Bonus puan sistemi']
     },
@@ -39,7 +50,7 @@ const BossFightScreen = () => {
       id: 'puzzle-demon',
       title: 'Puzzle Şeytanı',
       description: 'En zorlu boss! Çoklu puzzle sistemi ile gerçek ustalığını göster.',
-      timeLimit: 420, // 7 minutes 
+      timeLimit: getTimeLimit(difficulty),
       difficulty: difficulty,
       specialRules: ['3 puzzle aynı anda', 'Her puzzle farklı zorluk', 'Toplam süre sınırı']
     }
@@ -86,7 +97,7 @@ const BossFightScreen = () => {
         <div className="text-center boss-entrance">
           <div className="text-9xl mb-8 animate-pulse">👹</div>
           <h1 className="text-6xl font-black mb-4 text-foreground">
-            BOSS FIGHT
+            Boss Fight Başlatılıyor
           </h1>
           <div className="text-8xl font-black text-warning">
             {countdown}

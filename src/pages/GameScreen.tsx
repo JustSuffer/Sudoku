@@ -209,18 +209,31 @@ const GameScreen = () => {
           });
         }
 
-        // Navigate to result screen
-        setTimeout(() => {
-          navigate('/result', { 
-            state: { 
-              time: finalTime, 
-              difficulty: prev.difficulty,
-              isNewRecord: !stats.bestTimes[prev.difficulty] || finalTime < stats.bestTimes[prev.difficulty],
-              experience,
-              coinsEarned
-            } 
-          });
-        }, 1000);
+        // Check for boss fight after completion
+        const currentDifficultyStats = useGameStore.getState().difficultyStats[prev.difficulty];
+        if (currentDifficultyStats.gamesUntilBoss <= 0) {
+          // Navigate to boss fight
+          setTimeout(() => {
+            navigate('/boss-fight', { 
+              state: { 
+                difficulty: prev.difficulty 
+              } 
+            });
+          }, 1000);
+        } else {
+          // Navigate to result screen
+          setTimeout(() => {
+            navigate('/result', { 
+              state: { 
+                time: finalTime, 
+                difficulty: prev.difficulty,
+                isNewRecord: !stats.bestTimes[prev.difficulty] || finalTime < stats.bestTimes[prev.difficulty],
+                experience,
+                coinsEarned
+              } 
+            });
+          }, 1000);
+        }
       }
 
       return {
@@ -426,7 +439,9 @@ const GameScreen = () => {
           
           <div className="text-center">
             <h2 className="text-2xl font-bold text-foreground capitalize">
-              {difficulty} Seviye
+              {difficulty === 'easy' ? 'Kolay' : 
+               difficulty === 'medium' ? 'Orta' : 
+               difficulty === 'hard' ? 'Zor' : 'Uzman'} Seviye
             </h2>
             <p className="text-muted-foreground">Seviye {stats.currentLevel}</p>
           </div>
@@ -500,7 +515,7 @@ const GameScreen = () => {
 
           <Card className="p-4 text-center bg-card/80 backdrop-blur-sm">
             <div className="text-2xl font-bold text-foreground">
-              {stats.gamesUntilBoss}
+              {useGameStore.getState().difficultyStats[difficulty as Difficulty]?.gamesUntilBoss || 5}
             </div>
             <div className="text-sm text-muted-foreground">Boss'a</div>
           </Card>
@@ -528,16 +543,16 @@ const GameScreen = () => {
                     borderBottom: rowIndex % 3 === 2 && rowIndex !== 8 ? '3px solid hsl(var(--sudoku-border))' : undefined,
                   }}
                  >
-                   {cell.value !== 0 ? cell.value : ''}
-                   {cell.notes.length > 0 && cell.value === 0 && (
-                     <div className="notes-container">
-                       {cell.notes.map(note => (
-                         <span key={note} className="note-number">
-                           {note}
-                         </span>
-                       ))}
-                     </div>
-                   )}
+                {cell.value !== 0 ? cell.value : ''}
+                    {cell.notes.length > 0 && cell.value === 0 && (
+                      <div className="notes-container">
+                        {cell.notes.map(note => (
+                          <span key={note} className="note-number">
+                            {note}
+                          </span>
+                        ))}
+                      </div>
+                    )}
                  </div>
               ))
             )}
@@ -618,7 +633,7 @@ const GameScreen = () => {
               </p>
               <div className="flex gap-3 justify-center">
                 <Button onClick={resetGame} className="btn-gaming">
-                  Tekrar Dene
+                  Devam Et
                 </Button>
                 <Button onClick={() => navigate('/')} className="btn-secondary-gaming">
                   Ana Menü

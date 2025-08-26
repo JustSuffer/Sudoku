@@ -4,12 +4,12 @@ import { Button } from '@/components/ui/button';
 const SocialFooter = () => {
   return (
     <div className="fixed bottom-4 right-4 flex flex-col items-center space-y-3 z-50">
-      {/* Logo placeholder - will be replaced with actual logo */}
-      <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center shadow-lg">
+      {/* Company Logo */}
+      <div className="w-16 h-16 bg-black rounded-lg flex items-center justify-center shadow-xl border-2 border-yellow-400">
         <img 
           src="/lovable-uploads/10e38595-0258-4647-922c-4296734f29b7.png" 
           alt="IZ Games Logo" 
-          className="w-8 h-8 object-contain"
+          className="w-12 h-12 object-contain"
         />
       </div>
       
