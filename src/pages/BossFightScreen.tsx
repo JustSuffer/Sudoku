@@ -20,10 +20,10 @@ const BossFightScreen = () => {
   // Boss fight time limits based on difficulty
   const getTimeLimit = (diff: Difficulty) => {
     switch (diff) {
-      case 'easy': return 210; // 3:30
-      case 'medium': return 480; // 8:00
-      case 'hard': return 900; // 15:00
-      case 'expert': return 1200; // 20:00
+      case 'easy': return 210; // 3 minutes 30 seconds
+      case 'medium': return 480; // 8 minutes
+      case 'hard': return 900; // 15 minutes
+      case 'expert': return 1200; // 20 minutes
       default: return 300;
     }
   };
@@ -111,12 +111,19 @@ const BossFightScreen = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-gaming p-4">
-      {/* Dramatic Background */}
+    <div className="min-h-screen boss-fight-bg p-4">
+      {/* Dramatic Themed Background */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {/* Dragon/Viking/King themed background elements */}
         <div className="absolute top-10 left-10 w-32 h-32 bg-destructive/20 rounded-full animate-ping"></div>
         <div className="absolute top-20 right-20 w-24 h-24 bg-warning/20 rounded-full animate-ping" style={{ animationDelay: '1s' }}></div>
         <div className="absolute bottom-20 left-1/3 w-40 h-40 bg-primary/20 rounded-full animate-ping" style={{ animationDelay: '2s' }}></div>
+        
+        {/* Flame symbols */}
+        <div className="absolute top-1/4 right-1/4 text-6xl opacity-10 animate-pulse">🔥</div>
+        <div className="absolute bottom-1/4 left-1/4 text-6xl opacity-10 animate-pulse" style={{ animationDelay: '1s' }}>⚔️</div>
+        <div className="absolute top-1/2 left-1/8 text-6xl opacity-10 animate-pulse" style={{ animationDelay: '2s' }}>👑</div>
+        <div className="absolute top-3/4 right-1/8 text-6xl opacity-10 animate-pulse" style={{ animationDelay: '3s' }}>🐉</div>
       </div>
 
       <div className="max-w-4xl mx-auto z-10 relative">

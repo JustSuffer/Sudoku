@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useGameStore } from '@/hooks/useGameStore';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -18,10 +18,18 @@ import { supabase } from '@/integrations/supabase/client';
 const GameScreen = () => {
   const { difficulty } = useParams<{ difficulty: Difficulty }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const { stats, updateStats, addExperience, decrementBossCounter, updateCoins, userStats } = useGameStore();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
   const { t } = useLanguage();
+
+  // Check if this is a boss fight
+  const locationState = location.state as { isBossFight?: boolean; boss?: { id: string; title: string; description: string }; timeLimit?: number } | null;
+  const isBossFight = locationState?.isBossFight || false;
+  const bossTimeLimit = locationState?.timeLimit || 0;
+  const [isShaking, setIsShaking] = useState(false);
+  const [backgroundPhase, setBackgroundPhase] = useState(0);
 
   const [gameState, setGameState] = useState<GameState>(() => ({
     board: generatePuzzle(difficulty as Difficulty),
@@ -36,21 +44,61 @@ const GameScreen = () => {
     selectedNumber: null,
     sessionId: null,
     isWritingMode: false,
+    isBossFight,
+    bossTimeLimit,
   }));
 
   // Timer effect
   useEffect(() => {
     if (!gameState.isPaused && !gameState.isComplete) {
       const interval = setInterval(() => {
-        setGameState(prev => ({
-          ...prev,
-          currentTime: Math.floor((Date.now() - prev.startTime) / 1000)
-        }));
+        setGameState(prev => {
+          const newTime = Math.floor((Date.now() - prev.startTime) / 1000);
+          
+          // Boss fight time limit check
+          if (prev.isBossFight && prev.bossTimeLimit && newTime >= prev.bossTimeLimit) {
+            // Time's up in boss fight!
+            toast({
+              title: "Süre Doldu!",
+              description: "Boss Fight'ta süre doldu!",
+              variant: "destructive",
+            });
+            navigate('/boss-fight', { state: { difficulty: prev.difficulty } });
+            return prev;
+          }
+          
+          return {
+            ...prev,
+            currentTime: newTime
+          };
+        });
       }, 1000);
 
       return () => clearInterval(interval);
     }
-  }, [gameState.isPaused, gameState.isComplete]);
+  }, [gameState.isPaused, gameState.isComplete, toast, navigate]);
+
+  // Boss fight effects - shake board and change background every minute
+  useEffect(() => {
+    if (isBossFight && !gameState.isPaused && !gameState.isComplete) {
+      const interval = setInterval(() => {
+        // Shake the board
+        setIsShaking(true);
+        setTimeout(() => setIsShaking(false), 500);
+        
+        // Change background phase
+        setBackgroundPhase(prev => (prev + 1) % 4);
+        
+        toast({
+          title: "Boss Gücü!",
+          description: "Boss güçleniyor! Tahta titriyor!",
+          variant: "destructive",
+        });
+      }, 60000); // Every minute
+
+      return () => clearInterval(interval);
+    }
+  }, [isBossFight, gameState.isPaused, gameState.isComplete, toast]);
 
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -246,7 +294,15 @@ const GameScreen = () => {
     });
   }, [gameState.selectedCell, gameState.isPaused, gameState.board, gameState.livesRemaining, stats, addExperience, decrementBossCounter, updateStats, updateCoins, navigate, isAuthenticated, user, toast]);
 
-  const saveGameSession = async (sessionData: any) => {
+  const saveGameSession = async (sessionData: {
+    user_id: string;
+    difficulty: string;
+    completion_time: number;
+    coins_earned: number;
+    hints_used: number;
+    lives_lost: number;
+    is_completed: boolean;
+  }) => {
     try {
       await supabase.from('game_sessions').insert(sessionData);
     } catch (error) {
@@ -411,6 +467,7 @@ const GameScreen = () => {
 
   return (
     <div className={`min-h-screen p-4 transition-all duration-500 ${
+      isBossFight ? `boss-fight-bg boss-phase-${backgroundPhase}` :
       gameState.livesRemaining <= 1 ? 'lives-danger' : 
       gameState.livesRemaining <= 2 ? `lives-warning ${useGameStore.getState().theme === 'light' ? 'theme-light' : 'theme-dark'}` : 
       'bg-gradient-hero'
@@ -438,12 +495,30 @@ const GameScreen = () => {
           </Button>
           
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-foreground capitalize">
-              {difficulty === 'easy' ? 'Kolay' : 
-               difficulty === 'medium' ? 'Orta' : 
-               difficulty === 'hard' ? 'Zor' : 'Uzman'} Seviye
-            </h2>
-            <p className="text-muted-foreground">Seviye {stats.currentLevel}</p>
+            {isBossFight ? (
+              <>
+                <h2 className="text-2xl font-bold text-destructive capitalize flex items-center justify-center gap-2">
+                  👹 BOSS FIGHT 👹
+                </h2>
+                <p className="text-warning font-bold">Zorluk: {difficulty === 'easy' ? 'Kolay' : 
+                 difficulty === 'medium' ? 'Orta' : 
+                 difficulty === 'hard' ? 'Zor' : 'Uzman'}</p>
+                {bossTimeLimit > 0 && (
+                  <p className="text-destructive font-bold">
+                    Kalan Süre: {formatTime(Math.max(0, bossTimeLimit - gameState.currentTime))}
+                  </p>
+                )}
+              </>
+            ) : (
+              <>
+                <h2 className="text-2xl font-bold text-foreground capitalize">
+                  {difficulty === 'easy' ? 'Kolay' : 
+                   difficulty === 'medium' ? 'Orta' : 
+                   difficulty === 'hard' ? 'Zor' : 'Uzman'} Seviye
+                </h2>
+                <p className="text-muted-foreground">Seviye {stats.currentLevel}</p>
+              </>
+            )}
           </div>
 
           <div className="flex items-center gap-3">
@@ -482,7 +557,8 @@ const GameScreen = () => {
               onClick={resetGame}
               className="btn-secondary-gaming"
             >
-              <RotateCcw className="w-4 h-4" />
+              <RotateCcw className="w-4 h-4 mr-2" />
+              Yeniden başlat
             </Button>
           </div>
         </div>
@@ -523,7 +599,9 @@ const GameScreen = () => {
 
         {/* Sudoku Board */}
         <Card className="p-6 mb-6 bg-card/90 backdrop-blur-sm">
-          <div className="sudoku-grid mx-auto max-w-lg">
+          <div className={`sudoku-grid mx-auto max-w-lg ${isShaking ? 'animate-pulse' : ''}`} style={{
+            animation: isShaking ? 'boardShake 0.5s ease-in-out' : undefined
+          }}>
             {gameState.board.map((row, rowIndex) =>
               row.map((cell, colIndex) => (
                  <div

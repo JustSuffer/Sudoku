@@ -21,6 +21,7 @@ interface GameStore {
   setUserStats: (userStats: UserStats | null) => void;
   updateCoins: (amount: number) => void;
   syncCoinsWithAuth: () => void;
+  resetStore: () => void;
 }
 
 const initialStats: GameStats = {
@@ -36,27 +37,32 @@ const initialStats: GameStats = {
   currentLevel: 1,
   experience: 0,
   gamesUntilBoss: 5,
-  coinBalance: 50,
+  coinBalance: 0,
 };
 
 export const useGameStore = create<GameStore>()(
   persist(
-    (set, get) => ({
-      theme: 'light',
-      stats: initialStats,
-      user: null,
-      session: null,
-      userStats: null,
-      difficultyStats: {
-        easy: { gamesPlayed: 0, gamesUntilBoss: 5 },
-        medium: { gamesPlayed: 0, gamesUntilBoss: 5 },
-        hard: { gamesPlayed: 0, gamesUntilBoss: 5 },
-        expert: { gamesPlayed: 0, gamesUntilBoss: 5 },
-      },
-      setTheme: (theme) => {
-        set({ theme });
-        document.documentElement.classList.toggle('dark', theme === 'dark');
-      },
+    (set, get) => {
+      const initialState = {
+        theme: 'light' as Theme,
+        stats: initialStats,
+        user: null,
+        session: null,
+        userStats: null,
+        difficultyStats: {
+          easy: { gamesPlayed: 0, gamesUntilBoss: 5 },
+          medium: { gamesPlayed: 0, gamesUntilBoss: 5 },
+          hard: { gamesPlayed: 0, gamesUntilBoss: 5 },
+          expert: { gamesPlayed: 0, gamesUntilBoss: 5 },
+        },
+      };
+      
+      return {
+        ...initialState,
+        setTheme: (theme) => {
+          set({ theme });
+          document.documentElement.classList.toggle('dark', theme === 'dark');
+        },
       updateStats: (updates) =>
         set((state) => ({
           stats: { ...state.stats, ...updates },
@@ -113,16 +119,20 @@ export const useGameStore = create<GameStore>()(
       setSession: (session) => set({ session }),
       setUserStats: (userStats) => set({ userStats }),
       updateCoins: (amount) =>
-        set((state) => ({
-          stats: {
-            ...state.stats,
-            coinBalance: Math.max(0, state.stats.coinBalance + amount),
-          },
-          userStats: state.userStats ? {
-            ...state.userStats,
-            coin_balance: Math.max(0, state.userStats.coin_balance + amount),
-          } : null,
-        })),
+        set((state) => {
+          const newBalance = Math.max(0, state.stats.coinBalance + amount);
+          
+          return {
+            stats: {
+              ...state.stats,
+              coinBalance: newBalance,
+            },
+            userStats: state.userStats ? {
+              ...state.userStats,
+              coin_balance: Math.max(0, state.userStats.coin_balance + amount),
+            } : null,
+          };
+        }),
       syncCoinsWithAuth: () =>
         set((state) => {
           if (state.userStats && state.stats.coinBalance > 0) {
@@ -140,7 +150,24 @@ export const useGameStore = create<GameStore>()(
           }
           return state;
         }),
-    }),
+      resetStore: () =>
+        set(() => {
+          return {
+            theme: 'light' as Theme,
+            stats: initialStats,
+            user: null,
+            session: null,
+            userStats: null,
+            difficultyStats: {
+              easy: { gamesPlayed: 0, gamesUntilBoss: 5 },
+              medium: { gamesPlayed: 0, gamesUntilBoss: 5 },
+              hard: { gamesPlayed: 0, gamesUntilBoss: 5 },
+              expert: { gamesPlayed: 0, gamesUntilBoss: 5 },
+            },
+          };
+        }),
+      };
+    },
     {
       name: 'sudoku-game-store',
     }
