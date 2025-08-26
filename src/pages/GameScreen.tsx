@@ -5,6 +5,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Pause, Home, RotateCcw, HelpCircle, LogIn } from 'lucide-react';
+import WritingModeButton from '@/components/WritingModeButton';
+import SocialFooter from '@/components/SocialFooter';
+import { useLanguage } from '@/hooks/useLanguage';
 import { Difficulty, GameState } from '@/types/game';
 import { generatePuzzle, isValidMove, isBoardComplete, checkForErrors } from '@/utils/sudoku';
 import CoinIcon from '@/components/CoinIcon';
@@ -18,6 +21,7 @@ const GameScreen = () => {
   const { stats, updateStats, addExperience, decrementBossCounter, updateCoins, userStats } = useGameStore();
   const { isAuthenticated, user } = useAuth();
   const { toast } = useToast();
+  const { t } = useLanguage();
 
   const [gameState, setGameState] = useState<GameState>(() => ({
     board: generatePuzzle(difficulty as Difficulty),
@@ -31,6 +35,7 @@ const GameScreen = () => {
     hintsUsed: 0,
     selectedNumber: null,
     sessionId: null,
+    isWritingMode: false,
   }));
 
   // Timer effect
@@ -85,11 +90,42 @@ const GameScreen = () => {
       const newBoard = [...prev.board];
       const previousValue = newBoard[row][col].value;
       
-      // Update cell value
-      newBoard[row][col] = {
-        ...newBoard[row][col],
-        value: number,
-      };
+      if (prev.isWritingMode) {
+        // Writing mode: add/remove notes
+        const currentNotes = [...newBoard[row][col].notes];
+        if (number === 0) {
+          // Clear all notes
+          newBoard[row][col] = {
+            ...newBoard[row][col],
+            notes: [],
+          };
+        } else {
+          // Toggle note
+          const noteIndex = currentNotes.indexOf(number);
+          if (noteIndex > -1) {
+            currentNotes.splice(noteIndex, 1);
+          } else {
+            currentNotes.push(number);
+            currentNotes.sort();
+          }
+          newBoard[row][col] = {
+            ...newBoard[row][col],
+            notes: currentNotes,
+          };
+        }
+        
+        return {
+          ...prev,
+          board: newBoard,
+        };
+      } else {
+        // Normal mode: clear notes and set value
+        newBoard[row][col] = {
+          ...newBoard[row][col],
+          value: number,
+          notes: [], // Clear notes when placing number
+        };
+      }
 
       // Clear highlights first
       newBoard.forEach(boardRow => 
@@ -138,7 +174,7 @@ const GameScreen = () => {
         
         addExperience(experience);
         updateCoins(coinsEarned);
-        decrementBossCounter();
+        decrementBossCounter(prev.difficulty);
         
         // Update stats
         const newStats = {
@@ -356,6 +392,7 @@ const GameScreen = () => {
       hintsUsed: 0,
       selectedNumber: null,
       sessionId: null,
+      isWritingMode: false,
     });
   };
 
@@ -490,9 +527,18 @@ const GameScreen = () => {
                     borderRight: colIndex % 3 === 2 && colIndex !== 8 ? '3px solid hsl(var(--sudoku-border))' : undefined,
                     borderBottom: rowIndex % 3 === 2 && rowIndex !== 8 ? '3px solid hsl(var(--sudoku-border))' : undefined,
                   }}
-                >
-                  {cell.value !== 0 ? cell.value : ''}
-                </div>
+                 >
+                   {cell.value !== 0 ? cell.value : ''}
+                   {cell.notes.length > 0 && cell.value === 0 && (
+                     <div className="notes-container">
+                       {cell.notes.map(note => (
+                         <span key={note} className="note-number">
+                           {note}
+                         </span>
+                       ))}
+                     </div>
+                   )}
+                 </div>
               ))
             )}
           </div>
@@ -500,20 +546,26 @@ const GameScreen = () => {
 
         {/* Controls */}
         <div className="flex flex-col gap-4">
-          {/* Hint Button */}
+          {/* Hint and Writing Mode Buttons */}
           <Card className="p-4 bg-card/80 backdrop-blur-sm">
-            <div className="flex flex-col items-center gap-2">
-              <Button
-                onClick={useHint}
-                className="btn-secondary-gaming rounded-full px-8 py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300"
-                style={{ animation: 'pulseGlow 2s infinite' }}
-                disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 80 : stats.coinBalance < 80)}
-              >
-                ✨ İpucu
-              </Button>
-              <div className="flex items-center gap-1 text-sm font-bold text-muted-foreground">
-                80 <CoinIcon className="w-4 h-4" />
+            <div className="flex flex-row justify-center items-center gap-6">
+              <div className="flex flex-col items-center gap-2">
+                <Button
+                  onClick={useHint}
+                  className="btn-secondary-gaming rounded-full px-8 py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300"
+                  style={{ animation: 'pulseGlow 2s infinite' }}
+                  disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 80 : stats.coinBalance < 80)}
+                >
+                  ✨ {t('hint')}
+                </Button>
+                <div className="flex items-center gap-1 text-sm font-bold text-muted-foreground">
+                  80 <CoinIcon className="w-4 h-4" />
+                </div>
               </div>
+              <WritingModeButton 
+                isWritingMode={gameState.isWritingMode}
+                onToggle={() => setGameState(prev => ({ ...prev, isWritingMode: !prev.isWritingMode }))}
+              />
             </div>
           </Card>
 
@@ -603,6 +655,7 @@ const GameScreen = () => {
           </div>
         )}
       </div>
+      <SocialFooter />
     </div>
   );
 };

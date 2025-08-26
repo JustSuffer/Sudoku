@@ -65,7 +65,7 @@ const BossFightScreen = () => {
   }, [showCountdown]);
 
   const startBossFight = () => {
-    resetBossCounter();
+    resetBossCounter(difficulty);
     navigate(`/game/${difficulty}`, { 
       state: { 
         isBossFight: true, 
@@ -76,7 +76,7 @@ const BossFightScreen = () => {
   };
 
   const skipBossFight = () => {
-    resetBossCounter();
+    resetBossCounter(difficulty);
     navigate(`/game/${difficulty}`);
   };
 

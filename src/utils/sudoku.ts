@@ -10,6 +10,7 @@ export const createEmptyBoard = (): SudokuBoard => {
         isError: false,
         hints: [],
         isHighlighted: false,
+        notes: [],
     }))
   );
 };

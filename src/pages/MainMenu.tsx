@@ -10,12 +10,13 @@ import sudokuLogo from '@/assets/sudoku-logo.png';
 import CoinIcon from '@/components/CoinIcon';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import AdModal from '@/components/AdModal';
+import SocialFooter from '@/components/SocialFooter';
 import { useToast } from '@/hooks/use-toast';
 import { useLanguage } from '@/hooks/useLanguage';
 
 const MainMenu = () => {
   const navigate = useNavigate();
-  const { stats, userStats } = useGameStore();
+  const { stats, userStats, difficultyStats } = useGameStore();
   const { isAuthenticated, user, signOut } = useAuth();
   const { toast } = useToast();
   const { t, currentLanguage } = useLanguage();
@@ -29,7 +30,7 @@ const MainMenu = () => {
   ];
 
   const handleDifficultySelect = (difficulty: Difficulty) => {
-    if (stats.gamesUntilBoss === 1) {
+    if (difficultyStats[difficulty].gamesUntilBoss === 0) {
       navigate('/boss-fight', { state: { difficulty } });
     } else {
       navigate(`/game/${difficulty}`);
@@ -131,7 +132,7 @@ const MainMenu = () => {
           <div className="flex justify-center gap-8 text-sm text-muted-foreground">
             <div>Seviye: {stats.currentLevel}</div>
             <div>Oyun: {stats.gamesWon}/{stats.gamesPlayed}</div>
-            <div>Boss: {stats.gamesUntilBoss} kaldı</div>
+            <div>Boss: {Math.min(...Object.values(difficultyStats).map(d => d.gamesUntilBoss))} kaldı</div>
           </div>
         </div>
 
@@ -155,7 +156,7 @@ const MainMenu = () => {
             </div>
             <div className="flex flex-col items-center">
               <div className="w-8 h-8 text-2xl mb-2">🔥</div>
-              <span className="text-2xl font-bold text-foreground">{stats.gamesUntilBoss}</span>
+              <span className="text-2xl font-bold text-foreground">{Math.min(...Object.values(difficultyStats).map(d => d.gamesUntilBoss))}</span>
               <span className="text-sm text-muted-foreground">Boss'a</span>
             </div>
           </div>
@@ -187,7 +188,7 @@ const MainMenu = () => {
         </div>
 
         {/* Boss Fight Warning */}
-        {stats.gamesUntilBoss === 1 && (
+        {Object.values(difficultyStats).some(d => d.gamesUntilBoss === 0) && (
           <Card className="mb-8 p-6 bg-gradient-gaming text-center boss-entrance border-warning">
             <div className="text-5xl mb-4">👹</div>
             <h3 className="text-2xl font-bold mb-2 text-warning-foreground">
@@ -233,6 +234,7 @@ const MainMenu = () => {
 
       {/* Ad Modal */}
       <AdModal isOpen={isAdModalOpen} onClose={() => setIsAdModalOpen(false)} />
+      <SocialFooter />
     </div>
   );
 };

@@ -20,6 +20,7 @@ export interface SudokuCell {
   isError: boolean;
   hints: number[];
   isHighlighted: boolean;
+  notes: number[];
 }
 
 export type SudokuBoard = SudokuCell[][];
@@ -36,6 +37,9 @@ export interface GameState {
   hintsUsed: number;
   selectedNumber: number | null;
   sessionId: string | null;
+  isWritingMode: boolean;
+  isBossFight?: boolean;
+  bossTimeLimit?: number;
 }
 
 export interface UserStats {

@@ -236,6 +236,54 @@
     background: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(0, 0%, 95%)); /* White background for dark theme */
     border-color: hsl(var(--lives-warning-bg));
   }
+
+  /* Writing mode notes */
+  .notes-container {
+    @apply absolute inset-0 flex flex-wrap items-start justify-start p-1 pointer-events-none;
+    font-size: 0.6rem;
+    line-height: 1;
+  }
+
+  .note-number {
+    @apply text-blue-500 font-medium mr-1 mb-1;
+    font-size: 0.7rem;
+  }
+
+  /* Responsive design */
+  @media (max-width: 768px) {
+    .sudoku-grid {
+      @apply text-sm;
+      gap: 1px;
+    }
+    
+    .sudoku-cell {
+      @apply text-base;
+      min-height: 35px;
+    }
+    
+    .notes-container {
+      font-size: 0.5rem;
+    }
+    
+    .note-number {
+      font-size: 0.55rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sudoku-cell {
+      @apply text-sm;
+      min-height: 32px;
+    }
+    
+    .notes-container {
+      font-size: 0.45rem;
+    }
+    
+    .note-number {
+      font-size: 0.5rem;
+    }
+  }
   
   .lives-warning .sudoku-cell {
     background: hsl(var(--lives-warning-board));

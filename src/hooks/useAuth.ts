@@ -4,7 +4,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { UserStats } from '@/types/game';
 
 export const useAuth = () => {
-  const { user, session, setUser, setSession, setUserStats } = useGameStore();
+  const { user, session, setUser, setSession, setUserStats, syncCoinsWithAuth } = useGameStore();
 
   useEffect(() => {
     // Set up auth state listener
@@ -17,6 +17,7 @@ export const useAuth = () => {
           // Defer data fetching to prevent deadlocks
           setTimeout(() => {
             loadUserStats(session.user.id);
+            syncCoinsWithAuth();
           }, 0);
         } else if (event === 'SIGNED_OUT') {
           setUserStats(null);
@@ -29,9 +30,10 @@ export const useAuth = () => {
       setSession(session);
       setUser(session?.user ?? null);
       
-      if (session?.user) {
-        loadUserStats(session.user.id);
-      }
+        if (session?.user) {
+          loadUserStats(session.user.id);
+          syncCoinsWithAuth();
+        }
     });
 
     return () => subscription.unsubscribe();
