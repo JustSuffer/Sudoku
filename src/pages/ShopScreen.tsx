@@ -112,10 +112,10 @@ const ShopScreen = () => {
   }, {} as Record<string, ThemeItem[]>);
 
   return (
-    <div className="min-h-screen bg-gradient-hero p-4">
+    <div className="min-h-screen bg-gradient-hero p-2 sm:p-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-3">
           <Button 
             variant="outline" 
             onClick={() => navigate('/')}
@@ -125,32 +125,32 @@ const ShopScreen = () => {
             {t('shop.back')}
           </Button>
           
-          <h1 className="text-3xl font-bold text-center text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-bold text-center text-foreground order-2 sm:order-none">
             {t('shop.title')}
           </h1>
 
-          <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-4 py-2">
-            <CoinIcon className="w-6 h-6" />
-            <span className="font-bold text-foreground text-lg">
+          <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 sm:px-4 py-2 order-1 sm:order-none">
+            <CoinIcon className="w-5 h-5 sm:w-6 sm:h-6" />
+            <span className="font-bold text-foreground text-base sm:text-lg">
               {currentCoins}
             </span>
           </div>
         </div>
 
         {/* Theme Categories */}
-        <div className="space-y-8">
+        <div className="space-y-6 sm:space-y-8">
           {Object.entries(groupedThemes).map(([category, categoryThemes]) => (
             <div key={category}>
-              <h2 className="text-2xl font-bold text-foreground mb-4 flex items-center gap-2">
+              <h2 className="text-xl sm:text-2xl font-bold text-foreground mb-3 sm:mb-4 flex items-center gap-2">
                 {categoryNames[category as keyof typeof categoryNames]}
                 <Badge variant="secondary" className="text-sm">
                   {categoryThemes[0].price} <CoinIcon className="w-3 h-3 ml-1" />
                 </Badge>
               </h2>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {categoryThemes.map((theme) => (
-                  <Card key={theme.id} className="p-4 bg-card/90 backdrop-blur-sm hover:scale-105 transition-all duration-300">
+                  <Card key={theme.id} className="p-3 sm:p-4 bg-card/90 backdrop-blur-sm hover:scale-105 transition-all duration-300">
                     <div className="text-center space-y-3">
                       <div className="text-4xl mb-2">{theme.preview}</div>
                       <h3 className="font-bold text-lg text-foreground">
@@ -189,23 +189,23 @@ const ShopScreen = () => {
         </div>
 
         {/* Ad Section */}
-        <Card className="mt-8 p-6 bg-card/90 backdrop-blur-sm text-center">
-          <div className="text-4xl mb-4">📺</div>
-          <h3 className="text-xl font-bold text-foreground mb-2">
+        <Card className="mt-6 sm:mt-8 p-4 sm:p-6 bg-card/90 backdrop-blur-sm text-center">
+          <div className="text-3xl sm:text-4xl mb-3 sm:mb-4">📺</div>
+          <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">
             {currentLanguage === 'tr' ? 'Coin Kazanmak için Reklam İzle!' : 'Watch Ads to Earn Coins!'}
           </h3>
-          <p className="text-muted-foreground mb-4">
+          <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
             {currentLanguage === 'tr' ? 'Ana menüdeki coin simgesine tıklayarak reklam izleyebilirsiniz.' : 'Click the coin icon in the main menu to watch ads.'}
           </p>
           <div className="flex items-center justify-center gap-2 bg-primary/10 rounded-lg p-3 max-w-xs mx-auto">
-            <span className="text-lg font-bold">+20</span>
-            <CoinIcon className="w-5 h-5" />
-            <span className="text-sm">{currentLanguage === 'tr' ? 'reklam başına' : 'per ad'}</span>
+            <span className="text-base sm:text-lg font-bold">+20</span>
+            <CoinIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+            <span className="text-xs sm:text-sm">{currentLanguage === 'tr' ? 'reklam başına' : 'per ad'}</span>
           </div>
         </Card>
 
         {/* MasterLoot BOX Section */}
-        <Card className="p-6 mb-8 bg-card/80 backdrop-blur-sm">
+        <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-card/80 backdrop-blur-sm">
           <h2 className="text-2xl font-bold mb-6 text-center text-foreground flex items-center justify-center gap-2">
             <Sparkles className="w-6 h-6 text-yellow-400" />
             {t('shop.lootBox')}
@@ -225,12 +225,12 @@ const ShopScreen = () => {
 
         {/* Inventory Section */}
         {inventory.length > 0 && (
-          <Card className="p-6 mb-8 bg-card/80 backdrop-blur-sm">
-            <h2 className="text-2xl font-bold mb-6 text-center text-foreground">
+          <Card className="p-4 sm:p-6 mb-6 sm:mb-8 bg-card/80 backdrop-blur-sm">
+            <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-center text-foreground">
               {t('shop.inventory')}
             </h2>
             
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 sm:gap-4">
               {inventory.map((theme, index) => (
                 <Card key={index} className="p-4 text-center hover:scale-105 transition-all duration-300">
                   <div className="text-2xl mb-2">🎨</div>

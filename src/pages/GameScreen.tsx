@@ -466,7 +466,7 @@ const GameScreen = () => {
   };
 
   return (
-    <div className={`min-h-screen p-4 transition-all duration-500 ${
+    <div className={`min-h-screen p-2 sm:p-4 transition-all duration-500 ${
       isBossFight ? `boss-fight-bg boss-phase-${backgroundPhase}` :
       gameState.livesRemaining <= 1 ? 'lives-danger' : 
       gameState.livesRemaining <= 2 ? `lives-warning ${useGameStore.getState().theme === 'light' ? 'theme-light' : 'theme-dark'}` : 
@@ -484,20 +484,21 @@ const GameScreen = () => {
       )}
       <div className="max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-4 sm:mb-6 gap-3">
           <Button 
             variant="outline" 
             onClick={() => navigate('/')}
-            className="btn-secondary-gaming"
+            className="btn-secondary-gaming text-xs sm:text-sm px-3 py-2"
           >
-            <Home className="w-4 h-4 mr-2" />
-            Ana Menü
+            <Home className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+            <span className="hidden sm:inline">Ana Menü</span>
+            <span className="sm:hidden">Menü</span>
           </Button>
           
-          <div className="text-center">
+          <div className="text-center flex-1">
             {isBossFight ? (
               <>
-                <h2 className="text-2xl font-bold text-destructive capitalize flex items-center justify-center gap-2">
+                <h2 className="text-lg sm:text-2xl font-bold text-destructive capitalize flex items-center justify-center gap-2">
                   👹 BOSS FIGHT 👹
                 </h2>
                 <p className="text-warning font-bold">Zorluk: {difficulty === 'easy' ? 'Kolay' : 
@@ -521,17 +522,17 @@ const GameScreen = () => {
             )}
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-2 sm:gap-3">
             {/* Coins */}
-            <div className="flex items-center gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
-              <CoinIcon className="w-5 h-5" />
-              <span className="font-bold text-foreground">
+            <div className="flex items-center gap-1 sm:gap-2 bg-card/80 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2">
+              <CoinIcon className="w-4 h-4 sm:w-5 sm:h-5" />
+              <span className="font-bold text-foreground text-sm sm:text-base">
                 {isAuthenticated ? userStats?.coin_balance || 0 : stats.coinBalance}
               </span>
             </div>
 
             {/* Lives */}
-            <div className="bg-card/80 backdrop-blur-sm rounded-lg px-3 py-2">
+            <div className="bg-card/80 backdrop-blur-sm rounded-lg px-2 sm:px-3 py-1 sm:py-2">
               <LivesDisplay lives={gameState.livesRemaining} />
             </div>
 
@@ -539,67 +540,68 @@ const GameScreen = () => {
               <Button 
                 variant="outline" 
                 onClick={() => navigate('/auth')}
-                className="btn-secondary-gaming"
+                className="btn-secondary-gaming text-xs sm:text-sm p-2"
               >
-                <LogIn className="w-4 h-4" />
+                <LogIn className="w-3 h-3 sm:w-4 sm:h-4" />
               </Button>
             )}
 
             <Button 
               variant="outline" 
               onClick={togglePause}
-              className="btn-secondary-gaming"
+              className="btn-secondary-gaming text-xs sm:text-sm p-2"
             >
-              <Pause className="w-4 h-4" />
+              <Pause className="w-3 h-3 sm:w-4 sm:h-4" />
             </Button>
             <Button 
               variant="outline" 
               onClick={resetGame}
-              className="btn-secondary-gaming"
+              className="btn-secondary-gaming text-xs sm:text-sm px-2 py-2"
             >
-              <RotateCcw className="w-4 h-4 mr-2" />
-              Yeniden başlat
+              <RotateCcw className="w-3 h-3 sm:w-4 sm:h-4 mr-1 sm:mr-2" />
+              <span className="hidden sm:inline">Yeniden başlat</span>
+              <span className="sm:hidden">Reset</span>
             </Button>
           </div>
         </div>
 
         {/* Game Info */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          <Card className="p-4 text-center bg-card/80 backdrop-blur-sm">
-            <div className="text-2xl font-bold text-foreground">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
+          <Card className="p-2 sm:p-4 text-center bg-card/80 backdrop-blur-sm">
+            <div className="text-lg sm:text-2xl font-bold text-foreground">
               {formatTime(gameState.currentTime)}
             </div>
-            <div className="text-sm text-muted-foreground">Süre</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Süre</div>
           </Card>
           
-          <Card className="p-4 text-center bg-card/80 backdrop-blur-sm">
-            <div className="text-2xl font-bold text-foreground">
+          <Card className="p-2 sm:p-4 text-center bg-card/80 backdrop-blur-sm">
+            <div className="text-lg sm:text-2xl font-bold text-foreground">
               {stats.bestTimes[difficulty as Difficulty] 
                 ? formatTime(stats.bestTimes[difficulty as Difficulty])
                 : '--:--'
               }
             </div>
-            <div className="text-sm text-muted-foreground">Rekor</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Rekor</div>
           </Card>
 
-          <Card className="p-4 text-center bg-card/80 backdrop-blur-sm">
-            <div className="text-2xl font-bold text-foreground">
+          <Card className="p-2 sm:p-4 text-center bg-card/80 backdrop-blur-sm">
+            <div className="text-lg sm:text-2xl font-bold text-foreground">
               {stats.experience}/{stats.currentLevel * 100}
             </div>
-            <div className="text-sm text-muted-foreground">Deneyim</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Deneyim</div>
           </Card>
 
-          <Card className="p-4 text-center bg-card/80 backdrop-blur-sm">
-            <div className="text-2xl font-bold text-foreground">
+          <Card className="p-2 sm:p-4 text-center bg-card/80 backdrop-blur-sm">
+            <div className="text-lg sm:text-2xl font-bold text-foreground">
               {useGameStore.getState().difficultyStats[difficulty as Difficulty]?.gamesUntilBoss || 5}
             </div>
-            <div className="text-sm text-muted-foreground">Boss'a</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Boss'a</div>
           </Card>
         </div>
 
         {/* Sudoku Board */}
-        <Card className="p-6 mb-6 bg-card/90 backdrop-blur-sm">
-          <div className={`sudoku-grid mx-auto max-w-lg ${isShaking ? 'animate-pulse' : ''}`} style={{
+        <Card className="p-2 sm:p-4 md:p-6 mb-4 sm:mb-6 bg-card/90 backdrop-blur-sm">
+          <div className={`sudoku-grid mx-auto max-w-sm sm:max-w-md lg:max-w-lg ${isShaking ? 'animate-pulse' : ''}`} style={{
             animation: isShaking ? 'boardShake 0.5s ease-in-out' : undefined
           }}>
             {gameState.board.map((row, rowIndex) =>
@@ -640,19 +642,19 @@ const GameScreen = () => {
         {/* Controls */}
         <div className="flex flex-col gap-4">
           {/* Hint and Writing Mode Buttons */}
-          <Card className="p-4 bg-card/80 backdrop-blur-sm">
-            <div className="flex flex-row justify-center items-center gap-6">
+          <Card className="p-3 sm:p-4 bg-card/80 backdrop-blur-sm">
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6">
               <div className="flex flex-col items-center gap-2">
                 <Button
                   onClick={useHint}
-                  className="btn-secondary-gaming rounded-full px-8 py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300"
+                  className="btn-secondary-gaming rounded-full px-4 sm:px-8 py-3 sm:py-4 flex items-center gap-2 hover:scale-110 transition-all duration-300 text-xs sm:text-sm"
                   style={{ animation: 'pulseGlow 2s infinite' }}
                   disabled={gameState.isPaused || gameState.livesRemaining <= 0 || (isAuthenticated ? (userStats?.coin_balance || 0) < 80 : stats.coinBalance < 80)}
                 >
                   ✨ {t('hint')}
                 </Button>
-                <div className="flex items-center gap-1 text-sm font-bold text-muted-foreground">
-                  80 <CoinIcon className="w-4 h-4" />
+                <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-muted-foreground">
+                  80 <CoinIcon className="w-3 h-3 sm:w-4 sm:h-4" />
                 </div>
               </div>
               <WritingModeButton 
@@ -663,13 +665,13 @@ const GameScreen = () => {
           </Card>
 
           {/* Number Input */}
-          <Card className="p-6 bg-card/80 backdrop-blur-sm">
-            <div className="grid grid-cols-5 gap-3 max-w-md mx-auto">
+          <Card className="p-3 sm:p-4 md:p-6 bg-card/80 backdrop-blur-sm">
+            <div className="grid grid-cols-5 gap-2 sm:gap-3 max-w-xs sm:max-w-sm md:max-w-md mx-auto">
               {getAvailableNumbers().map((number) => (
                 <Button
                   key={number}
                   onClick={() => handleNumberInput(number)}
-                  className={`btn-gaming aspect-square text-xl ${
+                  className={`btn-gaming aspect-square text-base sm:text-lg md:text-xl ${
                     gameState.selectedNumber === number ? 'ring-2 ring-primary' : ''
                   }`}
                   disabled={gameState.isPaused || gameState.livesRemaining <= 0}
@@ -679,7 +681,7 @@ const GameScreen = () => {
               ))}
               <Button
                 onClick={() => handleNumberInput(0)}
-                className="btn-secondary-gaming aspect-square text-xl"
+                className="btn-secondary-gaming aspect-square text-base sm:text-lg md:text-xl"
                 disabled={gameState.isPaused || gameState.livesRemaining <= 0}
               >
                 ×

@@ -264,11 +264,15 @@
     .sudoku-grid {
       @apply text-sm;
       gap: 1px;
+      padding: 0.5rem;
     }
     
     .sudoku-cell {
       @apply text-base;
       min-height: 35px;
+      width: 35px;
+      height: 35px;
+      font-size: 0.9rem;
     }
     
     .notes-container {
@@ -279,12 +283,27 @@
     .note-number {
       font-size: 0.7rem;
     }
+    
+    .btn-gaming {
+      @apply px-4 py-2 text-sm;
+    }
+    
+    .btn-secondary-gaming {
+      @apply px-3 py-2 text-xs;
+    }
   }
 
   @media (max-width: 480px) {
+    .sudoku-grid {
+      padding: 0.25rem;
+    }
+    
     .sudoku-cell {
       @apply text-sm;
       min-height: 32px;
+      width: 32px;
+      height: 32px;
+      font-size: 0.8rem;
     }
     
     .notes-container {
@@ -293,6 +312,31 @@
     
     .note-number {
       font-size: 0.65rem;
+    }
+    
+    .btn-gaming {
+      @apply px-3 py-2 text-xs;
+    }
+    
+    .btn-secondary-gaming {
+      @apply px-2 py-1 text-xs;
+    }
+    
+    .floating-skull {
+      font-size: 1.5rem;
+    }
+  }
+
+  @media (max-width: 320px) {
+    .sudoku-cell {
+      min-height: 28px;
+      width: 28px;
+      height: 28px;
+      font-size: 0.75rem;
+    }
+    
+    .sudoku-grid {
+      gap: 0;
     }
   }
   

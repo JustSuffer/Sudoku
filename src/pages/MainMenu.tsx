@@ -54,9 +54,9 @@ const MainMenu = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-hero flex flex-col items-center justify-center p-2 sm:p-4">
       {/* Language Switcher - Top Right */}
-      <div className="fixed top-4 right-4 z-20">
+      <div className="fixed top-2 right-2 sm:top-4 sm:right-4 z-20">
         <LanguageSwitcher />
       </div>
 
@@ -69,12 +69,12 @@ const MainMenu = () => {
 
       <div className="w-full max-w-4xl z-10">
         {/* Header with Logo and Auth */}
-        <div className="text-center mb-8">
-          <div className="flex justify-center items-center gap-4 mb-6">
+        <div className="text-center mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row justify-center items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
             <img 
               src={sudokuLogo} 
               alt="Sudoku Logo" 
-              className="w-24 h-24 hover-scale animate-fade-in"
+              className="w-20 h-20 sm:w-24 sm:h-24 hover-scale animate-fade-in"
             />
             
             {/* Auth Section */}
@@ -125,11 +125,11 @@ const MainMenu = () => {
             </div>
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-4 animate-fade-in">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4 animate-fade-in">
             SUDOKU MASTER
           </h1>
           
-          <div className="flex justify-center gap-8 text-sm text-muted-foreground">
+          <div className="flex flex-wrap justify-center gap-3 sm:gap-6 lg:gap-8 text-xs sm:text-sm text-muted-foreground">
             <div>Seviye: {stats.currentLevel}</div>
             <div>Oyun: {stats.gamesWon}/{stats.gamesPlayed}</div>
             <div>Boss: {Math.min(...Object.values(difficultyStats).map(d => d.gamesUntilBoss))} kaldı</div>
@@ -137,8 +137,8 @@ const MainMenu = () => {
         </div>
 
         {/* Player Stats */}
-        <Card className="mb-8 p-6 bg-card/80 backdrop-blur-sm border-primary/20">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <Card className="mb-6 sm:mb-8 p-3 sm:p-4 lg:p-6 bg-card/80 backdrop-blur-sm border-primary/20">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 text-center">
             <div className="flex flex-col items-center">
               <Crown className="w-8 h-8 text-primary mb-2" />
               <span className="text-2xl font-bold text-foreground">{stats.currentLevel}</span>
@@ -163,23 +163,23 @@ const MainMenu = () => {
         </Card>
 
         {/* Difficulty Selection */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
           {difficulties.map((difficulty, index) => (
             <Card 
               key={difficulty.key}
-              className="p-6 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-glow bg-card/80 backdrop-blur-sm border-primary/20"
+              className="p-4 sm:p-6 cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-glow bg-card/80 backdrop-blur-sm border-primary/20"
               onClick={() => handleDifficultySelect(difficulty.key)}
               style={{ animationDelay: `${index * 0.1}s` }}
             >
               <div className="text-center">
-                <div className="text-4xl mb-3">{difficulty.icon}</div>
-                <h3 className="text-2xl font-bold mb-2 text-foreground">
+                <div className="text-3xl sm:text-4xl mb-2 sm:mb-3">{difficulty.icon}</div>
+                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold mb-2 text-foreground">
                   {currentLanguage === 'tr' ? difficulty.label : difficulty.labelEn}
                 </h3>
-                <p className="text-muted-foreground mb-4">
+                <p className="text-sm sm:text-base text-muted-foreground mb-3 sm:mb-4">
                   {currentLanguage === 'tr' ? difficulty.description : difficulty.descriptionEn}
                 </p>
-                <Button className="btn-gaming w-full">
+                <Button className="btn-gaming w-full text-sm sm:text-base">
                   {currentLanguage === 'tr' ? 'Başla' : 'Start'}
                 </Button>
               </div>
@@ -201,18 +201,18 @@ const MainMenu = () => {
         )}
 
         {/* Shop Button */}
-        <Card className="mb-8 p-4 bg-card/80 backdrop-blur-sm text-center hover:scale-105 transition-all duration-300 cursor-pointer" onClick={() => navigate('/shop')}>
-          <Button className="btn-gaming w-full text-xl py-4 flex items-center justify-center gap-3">
-            <ShoppingBag className="w-6 h-6" />
+        <Card className="mb-6 sm:mb-8 p-3 sm:p-4 bg-card/80 backdrop-blur-sm text-center hover:scale-105 transition-all duration-300 cursor-pointer" onClick={() => navigate('/shop')}>
+          <Button className="btn-gaming w-full text-lg sm:text-xl py-3 sm:py-4 flex items-center justify-center gap-2 sm:gap-3">
+            <ShoppingBag className="w-5 h-5 sm:w-6 sm:h-6" />
             {t('main.shop')}
-            <div className="text-sm bg-warning text-warning-foreground px-2 py-1 rounded-full">
+            <div className="text-xs sm:text-sm bg-warning text-warning-foreground px-2 py-1 rounded-full">
               Yeni!
             </div>
           </Button>
         </Card>
 
         {/* Menu Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center">
           <Button 
             variant="secondary"
             className="btn-secondary-gaming flex items-center gap-2"
