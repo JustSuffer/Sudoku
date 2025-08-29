@@ -89,6 +89,7 @@ const AdModal = ({ isOpen, onClose }: AdModalProps) => {
       </DialogContent>
     </Dialog>
   );
-};
+}; //use ad modal
+
 
 export default AdModal;
